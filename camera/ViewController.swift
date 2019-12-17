@@ -8,13 +8,42 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    @IBOutlet weak var imagemView: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
 
-
+    @IBAction func CameraButton(_ sender: Any) {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            let imagepicker = UIImagePickerController()
+            imagepicker.delegate = self
+            imagepicker.allowsEditing = true
+            imagepicker.sourceType = UIImagePickerController.SourceType.camera
+            self.present(imagepicker, animated: true, completion: nil)
+        }
+    }
+    
+    private func imagePickerController(_ picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [String : AnyObject])
+    {
+        let chosenImage = info[UIImagePickerController.InfoKey.originalImage] as! UIImage 
+        imagemView.contentMode = .scaleAspectFit
+        imagemView.image = chosenImage
+        UIImageWriteToSavedPhotosAlbum(imagemView.image, self, #selector(imagemView.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        dismiss(animated:true, completion: nil)
+    }
+    
+    
+    @IBAction func GaleriaButton(_ sender: Any) {
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
+            let galeria = UIImagePickerController()
+            galeria.delegate = self
+            galeria.sourceType = UIImagePickerController.SourceType.photoLibrary
+            self.present(galeria, animated: true, completion: nil)
+        }
+    }
 }
 
