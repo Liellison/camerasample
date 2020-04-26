@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     @IBOutlet weak var imagemView: UIImageView!
+    var image: UIImage?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,17 +27,6 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
         }
     }
     
-    private func imagePickerController(_ picker: UIImagePickerController,
-        didFinishPickingMediaWithInfo info: [String : AnyObject])
-    {
-        let chosenImage = info[UIImagePickerController.InfoKey.originalImage] as! UIImage 
-        imagemView.contentMode = .scaleAspectFit
-        imagemView.image = chosenImage
-        UIImageWriteToSavedPhotosAlbum(imagemView.image, self, #selector(imagemView.image(_:didFinishSavingWithError:contextInfo:)), nil)
-        dismiss(animated:true, completion: nil)
-    }
-    
-    
     @IBAction func GaleriaButton(_ sender: Any) {
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
             let galeria = UIImagePickerController()
@@ -44,6 +34,14 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
             galeria.sourceType = UIImagePickerController.SourceType.photoLibrary
             self.present(galeria, animated: true, completion: nil)
         }
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[.originalImage] as? UIImage else { return }
+        
+        dismiss(animated: true)
+        imagemView.image = image
+        self.image = image
     }
 }
 
